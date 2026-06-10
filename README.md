@@ -71,6 +71,150 @@ Each record contains metadata fields such as:
 
 ---
 
+## Workflow
+
+This project follows a reproducible research workflow for collecting, preparing, analysing, visualising, and sharing Europeana metadata related to India. The workflow is designed so that the main steps of the project can be reconstructed from the README, notebooks, and saved data files.
+
+### 1. Data Access
+
+The data was accessed through the Europeana API using Python in a Jupyter Notebook environment. Keyword-based queries were used to retrieve metadata records related to India from European cultural heritage collections.
+
+The search strategy was organised around four thematic query groups:
+
+* Geographic terms: India, Indian, Indien
+* Colonial terms: British India, East India Company, British Raj
+* Cultural terms: Indian art, ethnography, museum collections
+* Material terms: textiles, manuscripts, maps, photographs
+
+The raw metadata retrieved from the API was converted into a structured CSV file for further analysis.
+
+Main data file:
+
+* `data/europeana_india_dataset_1500_final.csv`
+
+Main tools:
+
+* Europeana API
+* Python
+* Jupyter Notebook
+* pandas
+
+### 2. Selection and Sampling
+
+The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
+
+The dataset contains approximately 1,500 records. During exploration, duplicate titles and repeated records were identified. Therefore, the project distinguishes between:
+
+* the full raw dataset of approximately 1,500 records;
+* a deduplicated analytical subset based on unique titles.
+
+This makes it possible to analyse both the overall structure of the Europeana search results and the more distinct metadata representations within the dataset.
+
+### 3. Cleaning and Preprocessing
+
+The dataset is cleaned and inspected before analysis. The main cleaning and preprocessing steps include:
+
+* checking the available metadata columns;
+* checking missing values in each field;
+* identifying duplicated titles;
+* creating a deduplicated dataset based on unique titles;
+* checking object type distribution;
+* identifying possible false positives or ambiguous records.
+
+One important issue is the ambiguity of the term “Indian.” In some records, “Indian” refers to India, while in others it refers to Indigenous peoples of the Americas. This issue is documented as a methodological limitation of keyword-based metadata retrieval.
+
+The original data file is preserved. Cleaned or processed versions are saved separately so that the workflow remains reproducible.
+
+### 4. Enrichment and Linking
+
+Potential enrichment may be carried out using external authority data such as Wikidata. Possible entities for enrichment include:
+
+* countries;
+* cultural heritage institutions;
+* places;
+* well-known works or organisations.
+
+Possible enrichment features include:
+
+* Wikidata Q-ID;
+* standardised name;
+* coordinates;
+* country;
+* institution type.
+
+If this step is applied, the matching decisions and any uncertain cases will be documented in the notebook and README.
+
+### 5. Analysis
+
+The analysis investigates how India is represented in Europeana metadata. The main fields used for analysis are:
+
+* `title`
+* `description`
+* `dataProvider`
+* `type`
+* `country`
+* `query_group`
+
+The analysis includes:
+
+* counting object types;
+* identifying top data providers;
+* identifying contributing countries;
+* comparing query groups;
+* checking missing metadata fields;
+* analysing frequent words in titles;
+* manually coding a sample of unique titles into thematic categories.
+
+The main thematic categories used for interpretation are:
+
+* colonial / empire;
+* material culture / textiles;
+* scientific knowledge;
+* cartography / geography;
+* visual culture;
+* music / film / performance;
+* false positives or ambiguous records.
+
+### 6. Visualisation
+
+The project will use simple visualisations to support the analysis. Planned visualisations include:
+
+* bar chart of object types;
+* bar chart of top data providers;
+* bar chart of contributing countries;
+* bar chart of query groups;
+* bar chart of manually coded themes;
+* possible word-frequency visualisation for title metadata.
+
+These visualisations are used to show which types of records and representational themes dominate the dataset.
+
+### 7. Documentation
+
+The workflow is documented in the README file and in Jupyter Notebooks. Markdown cells are used to explain the purpose of each step, and code comments are used to clarify the main actions in the code.
+
+The documentation records:
+
+* where the data comes from;
+* which search terms were used;
+* how the data was structured;
+* what cleaning decisions were made;
+* which files were created;
+* what limitations were found.
+
+Planned or existing notebooks include:
+
+* `notebooks/01_data_access.ipynb`
+* `notebooks/02_data_cleaning_and_analysis.ipynb`
+* `notebooks/03_visualisation.ipynb`
+
+### 8. Archiving and Sharing
+
+The project is shared through GitHub. The repository stores the README, notebooks, data files, and analysis outputs. New changes are committed and pushed with meaningful commit messages.
+
+The aim is to make the project transparent enough that another person can understand the sequence of steps, identify the files used at each stage, and reproduce the main analysis.
+
+---
+
 ## What is Missing or Uncertain
 
 - Some metadata fields are incomplete (especially descriptions and subjects)
