@@ -117,6 +117,14 @@ A second visualisation was added to compare the distribution of query groups in 
 
 The visualisation was saved as `outputs/figures/query_group_distribution.png`.
 
+### Week 7 data enhancement update
+
+A third notebook, `notebooks/03_wikidata_enhancement.ipynb`, was created to test Wikidata-based data enhancement. The selected entity type was organisations / institutions, using the `dataProvider` column.
+
+New columns were added for Wikidata Q-ID, standardised Wikidata label, institution type, and match status. A manual sample enhancement was applied to selected providers. The result was 64 matched rows, 24 uncertain rows, and 157 rows not yet checked.
+
+The enhanced sample dataset was saved as `data/processed/europeana_india_unique_titles_enhanced_sample.csv`.
+
 ### 2. Selection and Sampling
 
 The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
