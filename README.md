@@ -111,6 +111,14 @@ A second notebook, `notebooks/02_data_cleaning_and_analysis.ipynb`, was created 
 
 The transformed dataset was saved as `data/processed/europeana_india_unique_titles_transformed.csv`, and the first visualisation was saved as `outputs/figures/object_type_distribution.png`.
 
+### Week 6 Hometask 1 update
+
+A second visualisation was added to compare the distribution of query groups in the deduplicated dataset. This analysis checks whether the original four-part sampling strategy — geographic, colonial, cultural, and material — remains balanced after duplicate titles are removed.
+
+The visualisation was saved as `outputs/figures/query_group_distribution.png`.
+
+
+
 ### 2. Selection and Sampling
 
 The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
