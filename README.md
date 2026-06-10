@@ -125,6 +125,17 @@ New columns were added for Wikidata Q-ID, standardised Wikidata label, instituti
 
 The enhanced sample dataset was saved as `data/processed/europeana_india_unique_titles_enhanced_sample.csv`.
 
+### Week 7 hometask: Wikidata enhancement of top data providers
+
+For the Week 7 hometask, the Wikidata enhancement approach was generalised from a small sample to a larger subset: the top 15 most frequent data providers in the transformed dataset.
+
+The selected entity type was organisations / institutions, using the `dataProvider` column. The enhancement added Wikidata-related fields such as Q-ID, standardised label, institution type, and match status.
+
+After improving the matching, the result was 139 matched rows, 28 uncertain rows, and 78 rows not checked because they were outside the selected top-provider subset. Two previously uncertain providers, Museum of Ethnography and University Library of Genova, were upgraded to matched after checking Wikidata more carefully.
+
+The enhanced dataset was saved as `data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`.
+
+
 ### 2. Selection and Sampling
 
 The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
