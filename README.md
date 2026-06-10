@@ -99,6 +99,12 @@ Main tools:
 * Jupyter Notebook
 * pandas
 
+### Week 5 reproducibility update
+
+A new notebook, `notebooks/01_data_access.ipynb`, was created to implement the first two workflow stages: data access and selection/sampling. The notebook loads the Europeana India dataset, checks the query group distribution, saves a raw copy in `data/raw/`, creates a deduplicated analytical subset based on unique titles, and saves it in `data/processed/`.
+
+The notebook was tested by running all cells from top to bottom without errors.
+
 ### 2. Selection and Sampling
 
 The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
