@@ -105,6 +105,12 @@ A new notebook, `notebooks/01_data_access.ipynb`, was created to implement the f
 
 The notebook was tested by running all cells from top to bottom without errors.
 
+### Week 6 transformation and visualisation update
+
+A second notebook, `notebooks/02_data_cleaning_and_analysis.ipynb`, was created to transform the deduplicated dataset and produce an initial visualisation. New columns were added to describe metadata completeness, title length, India-related title references, and possible false positives.
+
+The transformed dataset was saved as `data/processed/europeana_india_unique_titles_transformed.csv`, and the first visualisation was saved as `outputs/figures/object_type_distribution.png`.
+
 ### 2. Selection and Sampling
 
 The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
