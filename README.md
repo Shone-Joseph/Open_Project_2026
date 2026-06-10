@@ -117,8 +117,6 @@ A second visualisation was added to compare the distribution of query groups in 
 
 The visualisation was saved as `outputs/figures/query_group_distribution.png`.
 
-
-
 ### 2. Selection and Sampling
 
 The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
