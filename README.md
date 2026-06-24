@@ -1,311 +1,395 @@
-# Open Cultural Heritage Data Project (2026)
+# Representations of India in Europeana Metadata
 
----
+## Project overview
 
-## Project Description
+This project investigates how India is represented through metadata in European digital cultural heritage collections available through Europeana.
 
-This project investigates how European cultural heritage institutions represent India through metadata in digital collections.
+The focus is not primarily on the physical objects themselves, but on how India-related material is described, classified, grouped, and made searchable within museum, archive, library, and cultural heritage metadata systems.
 
-The focus is on how “India” is described, classified, and structured within museum and archival metadata systems, rather than on the physical artifacts themselves.
+The project examines four broad dimensions:
 
-The dataset was collected and processed using the Europeana API in a Jupyter Notebook environment.
+- geographic representations of India;
+- colonial and historical framing;
+- cultural and heritage classifications;
+- material and object categories.
 
-The analysis is based on four thematic dimensions:
-- Geographic representations of India
-- Colonial and historical framing
-- Cultural and heritage classifications
-- Material/object types
+The project was completed as coursework for the **MA Data and Discourse Studies** programme at **TU Darmstadt**.
 
----
+## Author
 
-## Research Purpose
+**Shone Joseph**
 
-The purpose of this project is to explore:
+## Research question
 
-- How India is represented in European cultural heritage metadata
-- How institutional classification systems shape these representations
-- How object types (image, text, sound, video) are distributed
-- How colonial and cultural framing appears in metadata descriptions
+How is India represented in Europeana metadata, and what patterns can be identified in the retrieved records in relation to object types, thematic search categories, contributing institutions, metadata completeness, and search ambiguity?
 
----
+## Research purpose
 
-## Data Origin Note
+The project aims to explore:
 
-### Source:
-Europeana API
+- how India is described in European cultural heritage metadata;
+- how institutional classification systems shape those representations;
+- which object types dominate the retrieved records;
+- how colonial, cultural, geographic, and material framings appear in the data;
+- which institutions contribute the most records;
+- how complete the available metadata is;
+- where keyword-based searches produce ambiguous or potentially irrelevant results;
+- how selected provider information can be enriched using Wikidata.
 
-### Date accessed:
-May 2026
+## Data source
 
-### License:
-Open metadata (varies by contributing institution; many records are CC0 or openly licensed)
+The records were collected from the **Europeana Search API** in **May 2026**.
 
-### Description:
-The dataset consists of approximately 1500 metadata records retrieved using keyword-based queries via the Europeana API.
+Europeana aggregates metadata from museums, archives, libraries, galleries, universities, and other cultural heritage organisations.
 
-The data was structured into four query groups:
-- Geographic terms (India, Indian, Indien)
-- Colonial terms (British India, East India Company, British Raj)
-- Cultural terms (Indian art, ethnography, museum collections)
-- Material terms (textiles, manuscripts, maps, photographs)
+The fixed raw dataset used for this project is stored at:
 
-Each record contains metadata fields such as:
-- title
-- description
-- subject
-- data provider
-- object type
-- country (when available)
+`data/raw/europeana_india_dataset_1500_raw.csv`
 
----
+Because Europeana is a live service, search results may change over time as records, metadata, indexing, and ranking are updated. The stored raw CSV should therefore be treated as the authoritative dataset for reproducing this project.
 
-## What Has Already Been Done to the Data
+## Collection design
 
-- Retrieved data using the Europeana API in Python (Jupyter Notebook)
-- Applied stratified keyword-based queries across four thematic dimensions
-- Constructed a structured dataset (~1500 records)
-- Basic structuring and transformation into pandas dataframe
-- Assigned query group labels to each record
-- Performed initial exploratory analysis of metadata structure
-- Saved dataset in CSV format for further analysis
+The dataset contains 1,500 records organised into four thematic query groups.
 
----
+Each query group originally contributed 375 records:
 
-## Workflow
+| Query group | Records |
+|---|---:|
+| Geographic | 375 |
+| Colonial | 375 |
+| Cultural | 375 |
+| Material | 375 |
+| **Total** | **1,500** |
 
-This project follows a reproducible research workflow for collecting, preparing, analysing, visualising, and sharing Europeana metadata related to India. The workflow is designed so that the main steps of the project can be reconstructed from the README, notebooks, and saved data files.
+The search strategy used several terms rather than relying on a single keyword.
 
-### 1. Data Access
+Examples include:
 
-The data was accessed through the Europeana API using Python in a Jupyter Notebook environment. Keyword-based queries were used to retrieve metadata records related to India from European cultural heritage collections.
+### Geographic
 
-The search strategy was organised around four thematic query groups:
+- India
+- Indian
+- Indien
 
-* Geographic terms: India, Indian, Indien
-* Colonial terms: British India, East India Company, British Raj
-* Cultural terms: Indian art, ethnography, museum collections
-* Material terms: textiles, manuscripts, maps, photographs
+### Colonial
 
-The raw metadata retrieved from the API was converted into a structured CSV file for further analysis.
+- British India
+- colonial India
+- British Raj
+- East India Company
 
-Main data file:
+### Cultural
 
-* `data/europeana_india_dataset_1500_final.csv`
+- Indian art
+- Indian museum collection
+- South Asia collection
+- ethnography India
+- India exhibition
 
-Main tools:
+### Material
 
-* Europeana API
-* Python
-* Jupyter Notebook
-* pandas
+- Indian textile
+- Indian manuscript
+- Indian photograph
+- Indian map
+- Indian print
 
-### Week 5 reproducibility update
+The exact collection logic is documented in:
 
-A new notebook, `notebooks/01_data_access.ipynb`, was created to implement the first two workflow stages: data access and selection/sampling. The notebook loads the Europeana India dataset, checks the query group distribution, saves a raw copy in `data/raw/`, creates a deduplicated analytical subset based on unique titles, and saves it in `data/processed/`.
+`notebooks/00_data_collection.ipynb`
 
-The notebook was tested by running all cells from top to bottom without errors.
+## Original metadata fields
+
+The raw dataset contains eight fields:
+
+- `query_group`
+- `search_term`
+- `title`
+- `description`
+- `subject`
+- `dataProvider`
+- `type`
+- `country`
+
+## Project workflow
+
+The project follows a reproducible workflow for collecting, selecting, cleaning, analysing, visualising, enriching, documenting, and sharing Europeana metadata.
+
+The four notebooks are:
 
-### Week 6 transformation and visualisation update
+1. `00_data_collection.ipynb`
+2. `01_data_access.ipynb`
+3. `02_data_cleaning_and_analysis.ipynb`
+4. `03_wikidata_enhancement.ipynb`
 
-A second notebook, `notebooks/02_data_cleaning_and_analysis.ipynb`, was created to transform the deduplicated dataset and produce an initial visualisation. New columns were added to describe metadata completeness, title length, India-related title references, and possible false positives.
+For ordinary reproduction of the project results, begin with notebook 01.
 
-The transformed dataset was saved as `data/processed/europeana_india_unique_titles_transformed.csv`, and the first visualisation was saved as `outputs/figures/object_type_distribution.png`.
+Notebook 00 is optional because it requires a Europeana API key and accesses a live service.
 
-### Week 6 Hometask 1 update
+## Repository structure
 
-A second visualisation was added to compare the distribution of query groups in the deduplicated dataset. This analysis checks whether the original four-part sampling strategy — geographic, colonial, cultural, and material — remains balanced after duplicate titles are removed.
+```text
+Open_Project_2026/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── data/
+│   ├── README.md
+│   ├── raw/
+│   │   └── europeana_india_dataset_1500_raw.csv
+│   └── processed/
+│       ├── europeana_india_unique_titles.csv
+│       ├── europeana_india_unique_titles_transformed.csv
+│       ├── europeana_india_unique_titles_enhanced_sample.csv
+│       └── europeana_india_unique_titles_enhanced_top15_providers.csv
+├── notebooks/
+│   ├── README.md
+│   ├── 00_data_collection.ipynb
+│   ├── 01_data_access.ipynb
+│   ├── 02_data_cleaning_and_analysis.ipynb
+│   └── 03_wikidata_enhancement.ipynb
+├── outputs/
+│   ├── figures/
+│   │   ├── object_type_distribution.png
+│   │   └── query_group_distribution.png
+│   └── tables/
+│       ├── object_type_summary.csv
+│       └── query_group_summary.csv
+├── docs/
+│   ├── metadata_guide.md
+│   ├── data_appendix.md
+│   ├── ai_use_statement.md
+│   └── peer_test_instructions.md
+└── report/
+    └── project_report.md
+```
 
-The visualisation was saved as `outputs/figures/query_group_distribution.png`.
+## Software requirements
 
-### Week 7 data enhancement update
+The project uses Python and JupyterLab.
 
-A third notebook, `notebooks/03_wikidata_enhancement.ipynb`, was created to test Wikidata-based data enhancement. The selected entity type was organisations / institutions, using the `dataProvider` column.
+The main required packages are:
 
-New columns were added for Wikidata Q-ID, standardised Wikidata label, institution type, and match status. A manual sample enhancement was applied to selected providers. The result was 64 matched rows, 24 uncertain rows, and 157 rows not yet checked.
+- JupyterLab;
+- pandas;
+- NumPy;
+- Matplotlib;
+- requests;
+- ipykernel.
 
-The enhanced sample dataset was saved as `data/processed/europeana_india_unique_titles_enhanced_sample.csv`.
+The tested package versions are listed in:
 
-### Week 7 hometask: Wikidata enhancement of top data providers
+`requirements.txt`
 
-For the Week 7 hometask, the Wikidata enhancement approach was generalised from a small sample to a larger subset: the top 15 most frequent data providers in the transformed dataset.
+## Installation
 
-The selected entity type was organisations / institutions, using the `dataProvider` column. The enhancement added Wikidata-related fields such as Q-ID, standardised label, institution type, and match status.
+### 1. Clone or download the repository
 
-After improving the matching, the result was 139 matched rows, 28 uncertain rows, and 78 rows not checked because they were outside the selected top-provider subset. Two previously uncertain providers, Museum of Ethnography and University Library of Genova, were upgraded to matched after checking Wikidata more carefully.
+```powershell
+git clone <REPOSITORY_URL>
+cd Open_Project_2026
+```
 
-The enhanced dataset was saved as `data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`.
+Replace `<REPOSITORY_URL>` with the actual GitHub repository URL.
 
+### 2. Create a virtual environment
 
-### 2. Selection and Sampling
+```powershell
+python -m venv europeana-env
+```
 
-The project focuses on metadata records that describe or classify India-related cultural heritage objects. Instead of using only one keyword, the dataset was built using several thematic query groups. This was done to avoid relying only on a single search term and to capture different kinds of India-related representation.
+### 3. Activate the environment
 
-The dataset contains approximately 1,500 records. During exploration, duplicate titles and repeated records were identified. Therefore, the project distinguishes between:
+On Windows PowerShell:
 
-* the full raw dataset of approximately 1,500 records;
-* a deduplicated analytical subset based on unique titles.
+```powershell
+.\europeana-env\Scripts\Activate.ps1
+```
 
-This makes it possible to analyse both the overall structure of the Europeana search results and the more distinct metadata representations within the dataset.
+If PowerShell blocks activation:
 
-### 3. Cleaning and Preprocessing
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\europeana-env\Scripts\Activate.ps1
+```
 
-The dataset is cleaned and inspected before analysis. The main cleaning and preprocessing steps include:
+### 4. Install the dependencies
 
-* checking the available metadata columns;
-* checking missing values in each field;
-* identifying duplicated titles;
-* creating a deduplicated dataset based on unique titles;
-* checking object type distribution;
-* identifying possible false positives or ambiguous records.
+```powershell
+pip install -r requirements.txt
+```
 
-One important issue is the ambiguity of the term “Indian.” In some records, “Indian” refers to India, while in others it refers to Indigenous peoples of the Americas. This issue is documented as a methodological limitation of keyword-based metadata retrieval.
+### 5. Launch JupyterLab
 
-The original data file is preserved. Cleaned or processed versions are saved separately so that the workflow remains reproducible.
+```powershell
+jupyter lab
+```
 
-### 4. Enrichment and Linking
+## Reproducing the project
 
-Potential enrichment may be carried out using external authority data such as Wikidata. Possible entities for enrichment include:
+### 1. Data access and deduplication
 
-* countries;
-* cultural heritage institutions;
-* places;
-* well-known works or organisations.
+Open:
 
-Possible enrichment features include:
+`notebooks/01_data_access.ipynb`
 
-* Wikidata Q-ID;
-* standardised name;
-* coordinates;
-* country;
-* institution type.
+This notebook loads the fixed raw dataset, checks the data structure and original query-group balance, removes duplicate titles, and saves the deduplicated dataset.
 
-If this step is applied, the matching decisions and any uncertain cases will be documented in the notebook and README.
+Expected output:
 
-### 5. Analysis
+`data/processed/europeana_india_unique_titles.csv`
 
-The analysis investigates how India is represented in Europeana metadata. The main fields used for analysis are:
+Expected number of rows:
 
-* `title`
-* `description`
-* `dataProvider`
-* `type`
-* `country`
-* `query_group`
+`245`
 
-The analysis includes:
+### 2. Data cleaning and analysis
 
-* counting object types;
-* identifying top data providers;
-* identifying contributing countries;
-* comparing query groups;
-* checking missing metadata fields;
-* analysing frequent words in titles;
-* manually coding a sample of unique titles into thematic categories.
+Open:
 
-The main thematic categories used for interpretation are:
+`notebooks/02_data_cleaning_and_analysis.ipynb`
 
-* colonial / empire;
-* material culture / textiles;
-* scientific knowledge;
-* cartography / geography;
-* visual culture;
-* music / film / performance;
-* false positives or ambiguous records.
+This notebook creates the analytical variables, examines object types and query groups, identifies potentially ambiguous records, and saves figures, tables, and the transformed dataset.
 
-### 6. Visualisation
+Expected transformed output:
 
-The project will use simple visualisations to support the analysis. Planned visualisations include:
+`data/processed/europeana_india_unique_titles_transformed.csv`
 
-* bar chart of object types;
-* bar chart of top data providers;
-* bar chart of contributing countries;
-* bar chart of query groups;
-* bar chart of manually coded themes;
-* possible word-frequency visualisation for title metadata.
+Expected figures:
 
-These visualisations are used to show which types of records and representational themes dominate the dataset.
+- `outputs/figures/object_type_distribution.png`
+- `outputs/figures/query_group_distribution.png`
 
-### 7. Documentation
+Expected summary tables:
 
-The workflow is documented in the README file and in Jupyter Notebooks. Markdown cells are used to explain the purpose of each step, and code comments are used to clarify the main actions in the code.
+- `outputs/tables/object_type_summary.csv`
+- `outputs/tables/query_group_summary.csv`
 
-The documentation records:
+### 3. Wikidata enrichment
 
-* where the data comes from;
-* which search terms were used;
-* how the data was structured;
-* what cleaning decisions were made;
-* which files were created;
-* what limitations were found.
+Open:
 
-Planned or existing notebooks include:
+`notebooks/03_wikidata_enhancement.ipynb`
 
-* `notebooks/01_data_access.ipynb`
-* `notebooks/02_data_cleaning_and_analysis.ipynb`
-* `notebooks/03_visualisation.ipynb`
+This notebook enriches selected provider names with Wikidata information, assigns institution types, records match confidence, and saves the final enriched dataset.
 
-### 8. Archiving and Sharing
+Expected final output:
 
-The project is shared through GitHub. The repository stores the README, notebooks, data files, and analysis outputs. New changes are committed and pushed with meaningful commit messages.
+`data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
 
-The aim is to make the project transparent enough that another person can understand the sequence of steps, identify the files used at each stage, and reproduce the main analysis.
+Expected final match-status counts:
 
----
+| Match status | Records |
+|---|---:|
+| `matched` | 139 |
+| `uncertain` | 28 |
+| `not_checked` | 78 |
+| **Total** | **245** |
 
-## What is Missing or Uncertain
+## Optional API collection
 
-- Some metadata fields are incomplete (especially descriptions and subjects)
-- Object classification varies across contributing institutions
-- Some records may overlap across query groups
-- API results depend on indexing quality and are not exhaustive
-- Institutional bias influences representation of cultural heritage materials
+Notebook `notebooks/00_data_collection.ipynb` documents the original collection process.
 
----
+It requires an environment variable named:
 
-## Initial Research Steps (Reconstructed)
+`EUROPEANA_API_KEY`
 
-### 1. Data Collection
-- Accessed Europeana API using Python
-- Used keyword-based queries across four stratified categories
-- Retrieved approximately 1500 metadata records
+Example in PowerShell:
 
-### 2. Data Processing
-- Converted JSON responses into a structured pandas dataframe
-- Added query group labels to each record
+```powershell
+$env:EUROPEANA_API_KEY="YOUR_API_KEY"
+```
 
-### 3. Data Exploration
-- Examined metadata fields and object type distribution
-- Identified dominance of image-based records
-- Conducted initial checks on missing values and structure
+The API key is not stored in the repository.
 
----
+Because Europeana is continuously updated, rerunning this notebook may not reproduce the exact same 1,500 records. The included raw CSV should be used to reproduce the submitted analysis.
 
-## Notes
+## Main findings
 
-### What I did but cannot fully remember:
-- Exact order of API pagination steps for some queries
-- Minor iterative adjustments during query refinement
+After title-based deduplication, the original balanced sampling structure changed:
 
-### Files that changed without full documentation:
-- Intermediate CSV versions during dataset construction
-- Temporary notebook outputs during testing and debugging
+| Query group | Unique-title records |
+|---|---:|
+| Cultural | 82 |
+| Material | 69 |
+| Colonial | 47 |
+| Geographic | 47 |
+| **Total** | **245** |
 
----
+The cultural and material groups retained more distinct titles, while the colonial and geographic groups contained more repeated titles.
 
-## Data File
+The dataset is strongly dominated by records classified as `IMAGE`. This reflects both visual digitisation practices and Europeana's broad object-type classification.
 
-- `data/europeana_india_dataset_1500_final.csv`
+A relatively small number of institutions contribute a substantial share of the deduplicated records, meaning that institutional collection histories, cataloguing practices, and digitisation priorities strongly influence the dataset.
 
----
+The Wikidata enrichment added structured provider information while preserving uncertainty. Possible matches that could not be confirmed were marked as `uncertain`.
 
-## Repository Structure
+## Search ambiguity
 
-- `data/` → contains raw and cleaned datasets
-- `notebooks/` → contains Jupyter notebooks used for processing and analysis
-- `README.md` → project documentation
+One important methodological issue is the ambiguity of the term “Indian.”
 
----
+In some records, it refers to India or South Asia. In historical metadata, however, it may refer to Indigenous peoples of the Americas.
 
-## Final Summary
+The `possible_false_positive` field is used as a screening aid. It is rule-based and should not be interpreted as a definitive classification. Ambiguous cases require contextual human review.
 
-This project demonstrates a reproducible workflow for collecting and analyzing cultural heritage metadata. It highlights how European institutions structure and represent India through digital archival systems and classification practices.
+## Limitations
+
+The project has several limitations:
+
+- Europeana search results are not exhaustive;
+- live API results may change;
+- search ranking influences retrieval;
+- metadata completeness varies between institutions;
+- titles, descriptions, and subjects may be missing or inconsistent;
+- provider names may appear in multiple forms;
+- object-type categories are broad;
+- title-based deduplication may merge distinct objects;
+- keyword matching may produce false positives and false negatives;
+- Wikidata enrichment covers mainly the most frequent providers;
+- some provider matches remain uncertain.
+
+## Ethical considerations
+
+Cultural heritage metadata is not neutral.
+
+It may reproduce colonial collecting histories, outdated terminology, institutional classification systems, unequal visibility of communities, and European perspectives on non-European heritage.
+
+The project preserves source metadata for analysis but does not endorse outdated terminology. Current respectful language is used in the documentation where possible.
+
+## Supporting documentation
+
+Additional documentation is available in:
+
+- `data/README.md`
+- `notebooks/README.md`
+- `docs/metadata_guide.md`
+- `docs/data_appendix.md`
+- `docs/ai_use_statement.md`
+- `docs/peer_test_instructions.md`
+
+## AI assistance
+
+Generative AI was used in a limited and supervised manner as a technical and editorial assistant.
+
+AI-generated suggestions were manually reviewed, executed, checked, revised, or rejected by the author. The author remained responsible for the research question, data-processing decisions, code execution, validation, interpretation, ethical framing, and final coursework submission.
+
+Full details are provided in:
+
+`docs/ai_use_statement.md`
+
+## Peer testing
+
+A peer tester should begin with this README and attempt to follow the project without prior verbal explanation from the author.
+
+Brief instructions are available at:
+
+`docs/peer_test_instructions.md`
+
+## Rights and reuse
+
+The repository contains metadata retrieved through Europeana and its contributing institutions.
+
+Rights and reuse conditions may differ between records and providers. Before reusing individual records, metadata, or images, consult the original Europeana record and relevant provider rights information.
+
+The code and project documentation are intended for coursework, research, and reproducibility testing.
