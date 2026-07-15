@@ -27,6 +27,7 @@ The project author remained responsible for:
 * deciding how the data should be cleaned and deduplicated;
 * selecting the analytical variables;
 * reviewing Wikidata matches;
+* reviewing the records flagged as possible false positives;
 * interpreting the results;
 * identifying limitations;
 * preparing the final coursework submission.
@@ -62,26 +63,34 @@ The author manually checked key results, including:
 * the creation of transformed variables;
 * the generation of figures and summary tables;
 * the final Wikidata-enriched dataset;
-* the final match-status counts.
+* the final match-status counts;
+* the outcome of the manual relevance review of possible false positives;
+* the metadata-completeness indicators added in the final enrichment stage.
 
 ## Wikidata enrichment
 
-AI assistance was used only to help organise the enrichment workflow and improve the structure of the code and documentation.
+AI assistance was used only to help organise the enrichment workflow and improve the structure of the code and documentation, across both the initial provider-enrichment stage (`03_wikidata_enhancement.ipynb`) and its later extension (`04_relevance_review.ipynb`).
 
 Provider matches were reviewed manually.
 
 Where a Wikidata match could not be confirmed confidently, it was labelled as:
 
-* `uncertain`, or
-* `not_checked`
+* `uncertain`,
+* `not_checked`, or
+* `needs_manual_review`
 
 rather than being presented as a confirmed result.
 
-The final expected match-status counts were taken from the executed notebook output:
+The final expected match-status counts, taken from the executed notebook output, were:
 
-* matched: 139
-* uncertain: 28
-* not_checked: 78
+* matched: 139, uncertain: 28, not_checked: 78 (after `03_wikidata_enhancement.ipynb`);
+* matched: 188, uncertain: 0, not_checked: 54, needs_manual_review: 3 (final, after `04_relevance_review.ipynb`).
+
+## Relevance review and completeness indicators
+
+AI assistance was used to help organise the manual review of records flagged by `possible_false_positive`, and to help structure the resulting `record_relevance_status`, `relevance_notes`, and metadata-completeness fields.
+
+The relevance judgement for each of the 17 flagged records was reviewed and confirmed by the author based on the record's own title and description; AI was not used to assign a relevance judgement independently of that review.
 
 ## Documentation assistance
 
@@ -94,7 +103,7 @@ All documentation was reviewed and edited by the author to ensure that it accura
 * the executed notebook workflow;
 * the real outputs;
 * the project limitations;
-* the author’s own interpretation.
+* the author's own interpretation.
 
 ## Monitoring and quality control
 
@@ -106,7 +115,7 @@ Suggestions were accepted only when they were consistent with:
 * the notebook outputs;
 * the dataset;
 * the course requirements;
-* the author’s own understanding of the research process.
+* the author's own understanding of the research process.
 
 Incorrect, unclear, or unsuitable suggestions were revised or rejected.
 

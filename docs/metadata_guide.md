@@ -149,7 +149,7 @@ Added analytical fields:
 
 ### Wikidata-enriched data
 
-Final file:
+File:
 
 `data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
 
@@ -164,19 +164,50 @@ Added enrichment fields:
 * `institution_type`
 * `match_status`
 
-Expected match-status counts:
+Match-status counts at this stage:
 
 * matched: 139
 * uncertain: 28
 * not_checked: 78
 
+### Final enriched data
+
+File:
+
+`data/processed/europeana_india_unique_titles_enhanced_extended.csv`
+
+Created by:
+
+`notebooks/04_relevance_review.ipynb`
+
+This notebook extends the Wikidata enrichment to a further set of frequent providers, manually reviews every record flagged as a possible false positive, and adds metadata-completeness indicators alongside clickable Wikidata links.
+
+Added fields, in addition to those listed above:
+
+* `provider_enrichment_notes`
+* `record_relevance_status`
+* `relevance_notes`
+* `has_subject`
+* `has_country`
+* `description_word_count`
+* `provider_is_enriched`
+* `enrichment_scope`
+* `wikidata_url`
+
+Final match-status counts:
+
+* matched: 188
+* uncertain: 0
+* not_checked: 54
+* needs_manual_review: 3
+
 ## Languages and geographic scope
 
 The metadata originates from institutions in multiple European countries and may contain several European languages.
 
-The research topic is India, but some search results may refer to other places or communities because of ambiguous historical terminology.
+The research topic is India, but some search results refer to other places or communities because of ambiguous historical terminology.
 
-The term “Indian” is especially ambiguous in older metadata. Some records may concern Indigenous peoples of the Americas rather than India.
+The term "Indian" is especially ambiguous in older metadata. A manual review of all 17 records flagged as possible false positives (`notebooks/04_relevance_review.ipynb`) confirmed that every one of them refers to Indigenous peoples of the Americas rather than to India, most commonly through the German cataloguing term "Indianer." These records were retained in the dataset and flagged rather than removed. This finding is limited to this 245-record sample; the remaining 228 records were not individually re-verified as India-related.
 
 ## Metadata completeness
 
@@ -185,24 +216,24 @@ Metadata completeness varies substantially between records and institutions.
 Possible issues include:
 
 * missing descriptions;
-* missing subject information;
+* missing subject information — in this dataset, the `subject` field is empty for all 245 records;
 * short or generic titles;
 * inconsistent provider naming;
 * different language conventions;
 * outdated cataloguing terminology;
 * inconsistent geographic labels.
 
+The empty `subject` field is a plausible contributing factor to the search-ambiguity finding above: a populated, controlled-vocabulary subject field (e.g. drawing on AAT, GND, or LCSH) would typically distinguish India from Indigenous peoples of the Americas as separate authority terms, reducing reliance on ambiguous free-text keyword matching.
+
 ## Wikidata enrichment method
 
-Provider names were matched manually to Wikidata entities for selected high-frequency institutions.
-
-The enrichment focused mainly on the top 15 data providers.
+Provider names were matched manually to Wikidata entities for selected high-frequency institutions, first for the top 15 providers in `03_wikidata_enhancement.ipynb`, then extended to a further set of frequent providers in `04_relevance_review.ipynb`.
 
 Each record was assigned one of the following statuses:
 
 ### `matched`
 
-The provider was confidently matched to a Wikidata entity.
+The provider was confidently matched to a Wikidata entity, supported by documented evidence.
 
 ### `uncertain`
 
@@ -212,7 +243,11 @@ A possible match was identified, but the institution could not be verified with 
 
 The provider was outside the selected enrichment scope or had not yet been manually reviewed.
 
-Uncertain matches were not forced into the matched category.
+### `needs_manual_review`
+
+No institution could be confidently identified for the provider name from the available evidence.
+
+Uncertain and needs_manual_review cases were not forced into the matched category.
 
 ## Versioning and reproducibility
 
@@ -252,4 +287,4 @@ Europeana records may contain different rights statements depending on the contr
 
 The dataset in this project is used for research and teaching.
 
-Anyone reusing individual records, images, or descriptive metadata should check the original Europeana record and the contributing institution’s rights information.
+Anyone reusing individual records, images, or descriptive metadata should check the original Europeana record and the contributing institution's rights information.

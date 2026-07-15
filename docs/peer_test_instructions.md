@@ -25,6 +25,7 @@ Notebook `00_data_collection.ipynb` is optional because it requires a Europeana 
 1. `notebooks/01_data_access.ipynb`
 2. `notebooks/02_data_cleaning_and_analysis.ipynb`
 3. `notebooks/03_wikidata_enhancement.ipynb`
+4. `notebooks/04_relevance_review.ipynb`
 
 ## Expected results
 
@@ -33,6 +34,7 @@ After running the workflow, the following should be available:
 * `data/processed/europeana_india_unique_titles.csv`
 * `data/processed/europeana_india_unique_titles_transformed.csv`
 * `data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
+* `data/processed/europeana_india_unique_titles_enhanced_extended.csv`
 * figures in `outputs/figures/`
 * summary tables in `outputs/tables/`
 
@@ -40,9 +42,14 @@ Useful checks:
 
 * raw records: 1,500
 * deduplicated records: 245
-* matched providers: 139
-* uncertain providers: 28
-* not-checked providers: 78
+* matched providers (after notebook 03): 139
+* uncertain providers (after notebook 03): 28
+* not-checked providers (after notebook 03): 78
+* matched providers (final, after notebook 04): 188
+* uncertain providers (final, after notebook 04): 0
+* not-checked providers (final, after notebook 04): 54
+* needs-manual-review providers (final, after notebook 04): 3
+* records flagged as possible false positives: 17 (all reviewed and recorded in `record_relevance_status`)
 
 ## What to record
 

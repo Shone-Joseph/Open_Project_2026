@@ -12,7 +12,8 @@ data/
 │   ├── europeana_india_unique_titles.csv
 │   ├── europeana_india_unique_titles_transformed.csv
 │   ├── europeana_india_unique_titles_enhanced_sample.csv
-│   └── europeana_india_unique_titles_enhanced_top15_providers.csv
+│   ├── europeana_india_unique_titles_enhanced_top15_providers.csv
+│   └── europeana_india_unique_titles_enhanced_extended.csv
 └── README.md
 ```
 
@@ -87,7 +88,7 @@ Created by the final provider-enrichment stage in:
 
 `notebooks/03_wikidata_enhancement.ipynb`
 
-This is the final enriched dataset used for the project interpretation.
+This is the top-15-provider enriched dataset.
 
 It adds the following fields:
 
@@ -96,11 +97,38 @@ It adds the following fields:
 * `institution_type`
 * `match_status`
 
-Expected final match-status counts:
+Expected match-status counts at this stage:
 
 * matched: 139
 * uncertain: 28
 * not_checked: 78
+
+### `processed/europeana_india_unique_titles_enhanced_extended.csv`
+
+Created by:
+
+`notebooks/04_relevance_review.ipynb`
+
+This is the final enriched dataset used for the project interpretation. It extends the Wikidata enrichment to a further set of frequent providers, manually reviews the records flagged as possible false positives, and adds metadata-completeness indicators alongside clickable Wikidata links.
+
+It adds the following fields, in addition to those listed above:
+
+* `provider_enrichment_notes`
+* `record_relevance_status`
+* `relevance_notes`
+* `has_subject`
+* `has_country`
+* `description_word_count`
+* `provider_is_enriched`
+* `enrichment_scope`
+* `wikidata_url`
+
+Expected final match-status counts:
+
+* matched: 188
+* uncertain: 0
+* not_checked: 54
+* needs_manual_review: 3
 
 ## Data-processing workflow
 
@@ -120,6 +148,10 @@ data/processed/europeana_india_unique_titles_transformed.csv
 03_wikidata_enhancement.ipynb
     ↓
 data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv
+    ↓
+04_relevance_review.ipynb
+    ↓
+data/processed/europeana_india_unique_titles_enhanced_extended.csv
 ```
 
 ## Data-quality limitations
@@ -132,12 +164,13 @@ The dataset has several important limitations:
 * The term “Indian” may refer either to India or, in historical metadata, to Indigenous peoples of the Americas.
 * Some source records contain outdated or colonial terminology.
 * Deduplication based only on title may merge distinct objects with identical titles or retain duplicate objects with different titles.
-* Wikidata matching was performed manually for selected providers and does not cover every institution.
-* Records marked `uncertain` were intentionally retained where an institutional match could not be confirmed confidently.
+* Wikidata matching was performed manually and does not cover every institution: 54 records remain `not_checked` and 3 remain `needs_manual_review` in the final dataset.
+* Records marked `uncertain` or `needs_manual_review` were intentionally retained where an institutional match could not be confirmed confidently.
+* The `subject` field is empty for all 245 records, limiting reliance on Europeana's own subject classification.
+* The manual relevance review covered only the 17 records flagged as possible false positives; the remaining 228 records were not individually re-verified as India-related.
 
 ## Reuse
 
 The CSV files contain metadata supplied through Europeana and its contributing institutions. Individual records may have different rights or reuse conditions.
 
 Users should consult the original Europeana record and provider information before reusing metadata or images outside this research project.
-

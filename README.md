@@ -116,12 +116,13 @@ The raw dataset contains eight fields:
 
 The project follows a reproducible workflow for collecting, selecting, cleaning, analysing, visualising, enriching, documenting, and sharing Europeana metadata.
 
-The four notebooks are:
+The five notebooks are:
 
 1. `00_data_collection.ipynb`
 2. `01_data_access.ipynb`
 3. `02_data_cleaning_and_analysis.ipynb`
 4. `03_wikidata_enhancement.ipynb`
+5. `04_relevance_review.ipynb`
 
 For ordinary reproduction of the project results, begin with notebook 01.
 
@@ -142,13 +143,15 @@ Open_Project_2026/
 │       ├── europeana_india_unique_titles.csv
 │       ├── europeana_india_unique_titles_transformed.csv
 │       ├── europeana_india_unique_titles_enhanced_sample.csv
-│       └── europeana_india_unique_titles_enhanced_top15_providers.csv
+│       ├── europeana_india_unique_titles_enhanced_top15_providers.csv
+│       └── europeana_india_unique_titles_enhanced_extended.csv
 ├── notebooks/
 │   ├── README.md
 │   ├── 00_data_collection.ipynb
 │   ├── 01_data_access.ipynb
 │   ├── 02_data_cleaning_and_analysis.ipynb
-│   └── 03_wikidata_enhancement.ipynb
+│   ├── 03_wikidata_enhancement.ipynb
+│   └── 04_relevance_review.ipynb
 ├── outputs/
 │   ├── figures/
 │   │   ├── object_type_distribution.png
@@ -287,6 +290,28 @@ Expected final match-status counts:
 | `not_checked` | 78 |
 | **Total** | **245** |
 
+### 4. Relevance review and further enrichment
+
+Open:
+
+`notebooks/04_relevance_review.ipynb`
+
+This notebook loads the enriched dataset from `03_wikidata_enhancement.ipynb`, extends the Wikidata enrichment to a further set of frequent providers, manually reviews the records flagged as possible false positives, adds metadata-completeness indicators, adds a clickable Wikidata link for every record with a confirmed identifier, and saves the final enriched dataset.
+
+Expected final output:
+
+`data/processed/europeana_india_unique_titles_enhanced_extended.csv`
+
+Expected final match-status counts:
+
+| Match status | Records |
+|---|---:|
+| `matched` | 188 |
+| `uncertain` | 0 |
+| `not_checked` | 54 |
+| `needs_manual_review` | 3 |
+| **Total** | **245** |
+
 ## Optional API collection
 
 Notebook `notebooks/00_data_collection.ipynb` documents the original collection process.
@@ -323,15 +348,19 @@ The dataset is strongly dominated by records classified as `IMAGE`. This reflect
 
 A relatively small number of institutions contribute a substantial share of the deduplicated records, meaning that institutional collection histories, cataloguing practices, and digitisation priorities strongly influence the dataset.
 
-The Wikidata enrichment added structured provider information while preserving uncertainty. Possible matches that could not be confirmed were marked as `uncertain`.
+The Wikidata enrichment added structured provider information while preserving uncertainty. Possible matches that could not be confirmed were marked as `uncertain`, and providers extending beyond the original enrichment scope were reviewed in a further pass, raising the total matched records to 188 of 245 while still preserving 3 records as `needs_manual_review` rather than forcing a match.
+
+Manual review of the records flagged as possible false positives confirmed that all 17 of them (approximately 6.9 percent of the deduplicated dataset) refer to Indigenous peoples of the Americas rather than to India, most commonly through the German cataloguing term "Indianer." These records were retained in the dataset and flagged rather than removed. This finding is limited to this 245-record sample and should not be generalised to Europeana as a whole; the remaining 228 records were not individually re-verified as India-related.
+
+The `subject` field, one of Europeana's core descriptive properties, is empty for all 245 records in the dataset. This is a plausible contributing factor to the search-ambiguity finding above: a populated, controlled-vocabulary subject field would typically distinguish India from Indigenous peoples of the Americas as separate authority terms, reducing reliance on ambiguous free-text keyword matching.
 
 ## Search ambiguity
 
-One important methodological issue is the ambiguity of the term “Indian.”
+One important methodological issue is the ambiguity of the term "Indian."
 
 In some records, it refers to India or South Asia. In historical metadata, however, it may refer to Indigenous peoples of the Americas.
 
-The `possible_false_positive` field is used as a screening aid. It is rule-based and should not be interpreted as a definitive classification. Ambiguous cases require contextual human review.
+The `possible_false_positive` field was used as a rule-based screening aid to flag records that might require contextual human review. All 17 flagged records were subsequently reviewed manually in `notebooks/04_relevance_review.ipynb`, and the outcome of each review is recorded in the `record_relevance_status` and `relevance_notes` fields (see "Main findings" above).
 
 ## Limitations
 
@@ -347,7 +376,9 @@ The project has several limitations:
 - title-based deduplication may merge distinct objects;
 - keyword matching may produce false positives and false negatives;
 - Wikidata enrichment covers mainly the most frequent providers;
-- some provider matches remain uncertain.
+- 54 records remain outside the enrichment scope and 3 could not be confidently matched to any institution;
+- the `subject` field is empty for all records in the dataset, limiting reliance on Europeana's own subject classification;
+- the manual relevance review covered only the 17 records flagged as possible false positives; the remaining 228 records were not individually re-verified as India-related.
 
 ## Ethical considerations
 

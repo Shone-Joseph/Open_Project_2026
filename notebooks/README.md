@@ -65,6 +65,31 @@ Expected final match-status counts:
 * uncertain: 28
 * not_checked: 78
 
+### 04_relevance_review.ipynb
+
+Loads the enriched dataset produced by `03_wikidata_enhancement.ipynb` and performs a further round of provider enrichment, a manual relevance review of records flagged as possible false positives, and adds metadata-completeness indicators alongside clickable Wikidata links. Running this notebook after `03_wikidata_enhancement.ipynb` produces the final, fully enriched dataset automatically.
+
+Final enriched output:
+
+`data/processed/europeana_india_unique_titles_enhanced_extended.csv`
+
+Expected final match-status counts:
+
+* matched: 188
+* uncertain: 0
+* not_checked: 54
+* needs_manual_review: 3 (new status, introduced in this notebook for providers that could not be confidently identified)
+
+New columns added in this notebook:
+
+* `provider_enrichment_notes` — documented reasoning for each provider enrichment decision
+* `record_relevance_status` — relevance judgement for records flagged by `possible_false_positive`
+* `relevance_notes` — reasoning for each relevance judgement
+* `has_subject`, `has_country` — metadata-completeness indicators
+* `description_word_count` — word count of the `description` field
+* `provider_is_enriched`, `enrichment_scope` — summaries of provider-enrichment status
+* `wikidata_url` — clickable Wikidata link for every row with a verified `wikidata_qid`
+
 ## Reproducibility note
 
 For ordinary reproduction of the analysis, begin with `01_data_access.ipynb` using the raw CSV already stored in `data/raw/`.

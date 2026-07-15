@@ -8,7 +8,8 @@ It distinguishes between:
 
 * fields obtained from the Europeana API;
 * project-created analytical fields;
-* manually added Wikidata-enrichment fields.
+* manually added Wikidata-enrichment fields;
+* manually added relevance-review and completeness fields.
 
 The authoritative raw dataset is:
 
@@ -16,19 +17,20 @@ The authoritative raw dataset is:
 
 The final enriched dataset is:
 
-`data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
+`data/processed/europeana_india_unique_titles_enhanced_extended.csv`
 
 ---
 
 ## Dataset overview
 
-| Dataset                                                      | Description                                 | Expected rows |
-| ------------------------------------------------------------ | ------------------------------------------- | ------------: |
-| `europeana_india_dataset_1500_raw.csv`                       | Raw Europeana API collection                |         1,500 |
-| `europeana_india_unique_titles.csv`                          | Deduplicated by title                       |           245 |
-| `europeana_india_unique_titles_transformed.csv`              | Deduplicated data with analytical variables |           245 |
-| `europeana_india_unique_titles_enhanced_sample.csv`          | Initial Wikidata-enrichment sample          |           245 |
-| `europeana_india_unique_titles_enhanced_top15_providers.csv` | Final top-provider enrichment               |           245 |
+| Dataset                                                      | Description                                          | Expected rows |
+| ------------------------------------------------------------ | ----------------------------------------------------- | ------------: |
+| `europeana_india_dataset_1500_raw.csv`                       | Raw Europeana API collection                           |         1,500 |
+| `europeana_india_unique_titles.csv`                          | Deduplicated by title                                  |           245 |
+| `europeana_india_unique_titles_transformed.csv`              | Deduplicated data with analytical variables            |           245 |
+| `europeana_india_unique_titles_enhanced_sample.csv`          | Initial Wikidata-enrichment sample                     |           245 |
+| `europeana_india_unique_titles_enhanced_top15_providers.csv` | Top-15-provider Wikidata enrichment                    |           245 |
+| `europeana_india_unique_titles_enhanced_extended.csv`        | Final enrichment: further provider matching, relevance review, completeness indicators |           245 |
 
 ---
 
@@ -115,7 +117,7 @@ A descriptive text associated with the record.
 The amount and quality of information vary significantly between providers.
 
 **Missing values:**
-Frequently missing in some provider collections.
+Frequently missing in some provider collections. 92 of 245 records have no description.
 
 **Limitations:**
 
@@ -135,14 +137,15 @@ Frequently missing in some provider collections.
 A subject term or classification associated with the record.
 
 **Missing values:**
-May be missing.
+Empty for all 245 records in this dataset (see `has_subject` below).
 
 **Limitations:**
 
 * institutions use different vocabularies;
 * values may not be standardised;
 * multiple subjects may be compressed into one exported value;
-* terminology may reflect colonial or outdated classification systems.
+* terminology may reflect colonial or outdated classification systems;
+* in this dataset, the field carries no usable signal at all, since it was never populated by any contributing provider in the sample.
 
 ---
 
@@ -160,7 +163,7 @@ Examples include museums, libraries, archives, photographic collections, and oth
 
 * provider-frequency analysis;
 * selection of the top 15 providers;
-* manual Wikidata enrichment.
+* manual Wikidata enrichment, later extended to further frequent providers.
 
 **Limitations:**
 
@@ -195,6 +198,8 @@ This is a broad digital-object category and does not provide a detailed material
 
 For example, photographs, paintings, maps, and scanned objects may all appear under `IMAGE`.
 
+Europeana's data model requires at least one of several descriptive properties (subject, coverage, type, spatial, temporal) to be present; `type` appears to be the property providers in this sample rely on to satisfy that requirement, since `subject` is never populated (see above).
+
 ---
 
 ## `country`
@@ -207,7 +212,7 @@ Country information associated with the Europeana record or contributing provide
 
 **Limitations:**
 
-* the field may refer to the provider country rather than the object’s place of origin;
+* the field may refer to the provider country rather than the object's place of origin;
 * values may be missing;
 * geographic meanings may vary between records;
 * the field should not automatically be interpreted as the cultural origin of the object.
@@ -273,8 +278,8 @@ Used as a basic relevance check for records retrieved by India-related searches.
 * the rule is keyword-based;
 * spelling and language variation may be missed;
 * the presence of a keyword does not guarantee that the object is about India;
-* relevant records may not explicitly use the word “India”;
-* historical uses of “Indian” may refer to Indigenous peoples of the Americas.
+* relevant records may not explicitly use the word "India";
+* historical uses of "Indian" may refer to Indigenous peoples of the Americas.
 
 ---
 
@@ -289,15 +294,17 @@ Flags records that may have been retrieved by an India-related search but appear
 **Purpose:**
 Supports manual inspection of search ambiguity and possible irrelevant results.
 
+**Values in this dataset:**
+17 of 245 records are flagged `True`. All 17 were subsequently reviewed manually in `04_relevance_review.ipynb` (see `record_relevance_status` below); every one was confirmed to refer to Indigenous peoples of the Americas rather than to India, most often through the German cataloguing term "Indianer."
+
 **Limitations:**
 
 * this is a heuristic project variable;
-* it is not a definitive classification;
-* false positives and false negatives are possible;
-* multilingual and historically complex records may be incorrectly flagged;
-* flagged records require contextual human review.
+* it is not a definitive classification on its own — the definitive judgement is recorded separately in `record_relevance_status`;
+* false negatives are possible: records not flagged here were not individually re-verified as India-related;
+* multilingual and historically complex records may be incorrectly flagged or missed.
 
-The field should be interpreted as a screening aid rather than a final judgement.
+The field should be interpreted as a screening aid rather than a final judgement; the final judgement for flagged records is in `record_relevance_status`.
 
 ---
 
@@ -306,7 +313,7 @@ The field should be interpreted as a screening aid rather than a final judgement
 ## `wikidata_qid`
 
 **Type:** Text
-**Created in:** `03_wikidata_enhancement.ipynb`
+**Created in:** `03_wikidata_enhancement.ipynb`, extended in `04_relevance_review.ipynb`
 
 **Description:**
 Stores the Wikidata identifier associated with a manually reviewed data provider.
@@ -321,7 +328,7 @@ Blank for providers that were not matched or not reviewed.
 **Limitations:**
 
 * enrichment focused mainly on high-frequency providers;
-* not every provider was checked;
+* not every provider was checked (54 of 245 records remain `not_checked` in the final dataset);
 * institutional mergers, renaming, or organisational hierarchies may complicate matching.
 
 ---
@@ -329,7 +336,7 @@ Blank for providers that were not matched or not reviewed.
 ## `wikidata_label`
 
 **Type:** Text
-**Created in:** `03_wikidata_enhancement.ipynb`
+**Created in:** `03_wikidata_enhancement.ipynb`, extended in `04_relevance_review.ipynb`
 
 **Description:**
 Stores the preferred Wikidata label of the matched provider entity.
@@ -345,7 +352,7 @@ Stores the preferred Wikidata label of the matched provider entity.
 ## `institution_type`
 
 **Type:** Text / categorical
-**Created in:** `03_wikidata_enhancement.ipynb`
+**Created in:** `03_wikidata_enhancement.ipynb`, extended in `04_relevance_review.ipynb`
 
 **Description:**
 A simplified institution category assigned during enrichment.
@@ -356,32 +363,36 @@ Possible categories may include:
 * library;
 * archive;
 * university;
-* photographic collection;
+* photographic archive;
 * cultural heritage institution;
-* other institutional categories used in the notebook.
+* film archive / media institution;
+* museum organisation;
+* other institutional categories used in the notebooks.
 
 **Limitations:**
 
 * some institutions have multiple functions;
 * simplified categories may not capture organisational complexity;
-* classifications depend on available Wikidata and institutional information.
+* classifications depend on available Wikidata and institutional information;
+* at least one provider in this category set (a private commercial photo agency) is not a public heritage institution in the conventional sense, which is worth bearing in mind when interpreting `institution_type` distributions.
 
 ---
 
 ## `match_status`
 
 **Type:** Text / categorical
-**Created in:** `03_wikidata_enhancement.ipynb`
+**Created in:** `03_wikidata_enhancement.ipynb`, extended in `04_relevance_review.ipynb`
 
 **Possible values:**
 
 * `matched`
 * `uncertain`
 * `not_checked`
+* `needs_manual_review` (introduced in `04_relevance_review.ipynb`)
 
 ### `matched`
 
-The provider was confidently connected to a Wikidata entity.
+The provider was confidently connected to a Wikidata entity, supported by documented evidence.
 
 ### `uncertain`
 
@@ -391,17 +402,165 @@ A possible Wikidata entity was identified, but the match could not be confirmed 
 
 The provider was outside the selected enrichment scope or had not been manually reviewed.
 
-**Expected final counts:**
+### `needs_manual_review`
 
-| Match status  | Expected records |
-| ------------- | ---------------: |
-| `matched`     |              139 |
-| `uncertain`   |               28 |
-| `not_checked` |               78 |
-| **Total**     |          **245** |
+No institution could be confidently identified for the provider name from the available evidence. This status was preserved rather than resolved through a forced or uncertain match.
+
+**Match-status counts after `03_wikidata_enhancement.ipynb`:**
+
+| Match status  | Records |
+| ------------- | ------: |
+| `matched`     |     139 |
+| `uncertain`   |      28 |
+| `not_checked` |      78 |
+| **Total**     | **245** |
+
+**Final match-status counts, after `04_relevance_review.ipynb`:**
+
+| Match status           | Records |
+| ----------------------- | ------: |
+| `matched`                |     188 |
+| `uncertain`               |       0 |
+| `not_checked`             |      54 |
+| `needs_manual_review`     |       3 |
+| **Total**                 | **245** |
 
 **Limitations:**
-Match status reflects the project’s manual review process and should not be interpreted as an assessment of the quality of the original institution or metadata.
+Match status reflects the project's manual review process and should not be interpreted as an assessment of the quality of the original institution or metadata. Full institutional coverage was not achieved: 54 records remain outside the enrichment scope, and 3 could not be confidently matched to any institution.
+
+---
+
+## `provider_enrichment_notes`
+
+**Type:** Text
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+Documents the reasoning behind each provider-enrichment decision made in this notebook — the evidence consulted and why a match was judged confident, uncertain, or unresolved.
+
+**Missing values:**
+Blank for records whose provider was not touched by this notebook's enrichment pass.
+
+**Limitations:**
+Free text; not a structured or machine-checkable field. Intended for human review and audit rather than computation.
+
+---
+
+## `wikidata_url`
+
+**Type:** Text (URL)
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+A clickable Wikidata link (`https://www.wikidata.org/wiki/{QID}`), generated automatically from `wikidata_qid` for every record with a confirmed identifier.
+
+**Missing values:**
+Blank wherever `wikidata_qid` is blank (57 of 245 records in the final dataset).
+
+**Limitations:**
+This is a deterministic formatting step over already-verified identifiers; it introduces no new judgement and is only as reliable as the underlying `wikidata_qid` value.
+
+---
+
+# Relevance-review fields
+
+## `record_relevance_status`
+
+**Type:** Text / categorical
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+Records the outcome of a manual relevance review for records flagged by `possible_false_positive`.
+
+**Values in this dataset:**
+`likely_not_india_related` for all 17 reviewed records; blank/unset for the remaining 228 records.
+
+**Limitations:**
+
+* only the 17 flagged records were reviewed — a blank value does **not** mean a record was confirmed as India-related, only that it was not individually reviewed;
+* the review is limited to this 245-record sample and should not be generalised.
+
+---
+
+## `relevance_notes`
+
+**Type:** Text
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+A short, record-specific justification for each relevance judgement in `record_relevance_status` — typically the place name, community name, or contextual detail that identified the record's true subject.
+
+**Missing values:**
+Blank wherever `record_relevance_status` is blank.
+
+**Limitations:**
+Free text; intended for human review rather than computation.
+
+---
+
+# Metadata-completeness fields
+
+## `has_subject`
+
+**Type:** Boolean
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+Indicates whether the `subject` field contains a non-empty value.
+
+**Values in this dataset:**
+`False` for all 245 records — see the `subject` field entry above.
+
+---
+
+## `has_country`
+
+**Type:** Boolean
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+Indicates whether the `country` field contains a non-empty value.
+
+**Values in this dataset:**
+`True` for all 245 records.
+
+---
+
+## `description_word_count`
+
+**Type:** Integer
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+Counts the number of words in the `description` field (0 where missing). A finer-grained completeness measure than the boolean `has_description`.
+
+**Limitations:**
+Same word-count caveats as `title_word_count` (spacing, punctuation, language differences).
+
+---
+
+## `provider_is_enriched`
+
+**Type:** Boolean
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+`True` where `match_status == "matched"`, else `False`. A simple rollup for filtering on enrichment completeness.
+
+---
+
+## `enrichment_scope`
+
+**Type:** Text / categorical
+**Created in:** `04_relevance_review.ipynb`
+
+**Description:**
+A readable category mapped from `match_status`, for presentation and summary purposes:
+
+* `matched` → `provider_confirmed`
+* `uncertain` → `provider_candidate_unconfirmed`
+* `needs_manual_review` → `provider_unidentified`
+* `not_checked` → `provider_not_reviewed`
 
 ---
 
@@ -411,10 +570,11 @@ Missing values are generally preserved rather than replaced with invented inform
 
 During analysis:
 
-* missing descriptions are used to calculate `has_description`;
+* missing descriptions are used to calculate `has_description` and `description_word_count`;
 * missing categorical values may be displayed as `Missing` in summary tables;
 * missing Wikidata values remain blank when no confident match is available;
-* uncertain matches are not automatically converted into confirmed matches.
+* uncertain and needs_manual_review matches are not automatically converted into confirmed matches;
+* records not individually reviewed for relevance are left with a blank `record_relevance_status` rather than assumed relevant.
 
 This approach prioritises transparency over artificially complete data.
 
@@ -450,6 +610,7 @@ Observed patterns may reflect:
 * colonial collecting histories;
 * provider metadata practices;
 * missing or inconsistent descriptions;
-* the distribution of participating European institutions.
+* the distribution of participating European institutions;
+* the completeness of Europeana's own descriptive fields (e.g. the empty `subject` field across this sample).
 
 Quantitative results should therefore be interpreted together with historical, institutional, and ethical context.
