@@ -33,6 +33,7 @@ After running the workflow, the following should be available:
 
 * `data/processed/europeana_india_unique_titles.csv`
 * `data/processed/europeana_india_unique_titles_transformed.csv`
+* `data/processed/europeana_india_unique_titles_enhanced_sample.csv` (intermediate file created by notebook 03)
 * `data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
 * `data/processed/europeana_india_unique_titles_enhanced_extended.csv`
 * figures in `outputs/figures/`
