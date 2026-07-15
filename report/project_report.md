@@ -110,7 +110,7 @@ The available metadata vary in completeness and consistency. Some records contai
 
 ## 5. Reproducible workflow
 
-The project workflow is organised into four Jupyter notebooks.
+The project workflow is organised into five Jupyter notebooks.
 
 ### 5.1 Data collection
 
@@ -164,11 +164,28 @@ This notebook:
 * assigns standardised labels;
 * assigns institution types;
 * records match confidence;
-* saves the final enhanced dataset.
+* saves the top-15-provider enhanced dataset.
+
+The resulting file is:
+
+`data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
+
+### 5.5 Relevance review and final enrichment
+
+`notebooks/04_relevance_review.ipynb`
+
+This notebook:
+
+* extends the Wikidata enrichment to a further set of frequent providers;
+* manually reviews every record flagged as a possible false positive;
+* records a reasoned relevance judgement for each reviewed record;
+* adds metadata-completeness indicators;
+* adds a clickable Wikidata link for every record with a verified identifier;
+* saves the final enriched dataset.
 
 The final file is:
 
-`data/processed/europeana_india_unique_titles_enhanced_top15_providers.csv`
+`data/processed/europeana_india_unique_titles_enhanced_extended.csv`
 
 ## 6. Data cleaning and analytical variables
 
@@ -305,7 +322,7 @@ Provider names may vary because of:
 * institutional restructuring;
 * inconsistent metadata entry.
 
-The project used manual Wikidata enrichment to improve provider consistency for the most frequent institutions.
+The project used manual Wikidata enrichment to improve provider consistency for the most frequent institutions. The enrichment was performed in two stages: an initial top-15-provider stage (`03_wikidata_enhancement.ipynb`) and an extension to a further set of frequent providers (`04_relevance_review.ipynb`).
 
 The following fields were added:
 
@@ -314,7 +331,7 @@ The following fields were added:
 * `institution_type`;
 * `match_status`.
 
-The final status counts are:
+The status counts after the first enrichment stage were:
 
 | Match status  | Records |
 | ------------- | ------: |
@@ -323,15 +340,25 @@ The final status counts are:
 | `not_checked` |      78 |
 | **Total**     | **245** |
 
+The final status counts, after the extended enrichment in `04_relevance_review.ipynb`, are:
+
+| Match status           | Records |
+| ---------------------- | ------: |
+| `matched`              |     188 |
+| `uncertain`            |       0 |
+| `not_checked`          |      54 |
+| `needs_manual_review`  |       3 |
+| **Total**              | **245** |
+
 A `matched` status indicates that the provider was confidently connected to a Wikidata entity.
 
-An `uncertain` status indicates that a possible match was found but could not be verified with sufficient confidence.
+An `uncertain` status indicates that a possible match was found but had not yet been verified with sufficient confidence. All records that were `uncertain` after the first stage were resolved during the second stage: matches were confirmed only after manual verification, including one provider (National Audiovisual Institute France) that was deliberately held at `uncertain` until the author manually verified its identity as Institut national de l'audiovisuel (INA).
 
-A `not_checked` status indicates that the provider was outside the selected enrichment scope.
+A `not_checked` status indicates that the provider remained outside the selected enrichment scope.
 
-Uncertain matches were preserved rather than automatically converted into confirmed matches.
+A `needs_manual_review` status, introduced in the second stage, indicates that no institution could be confidently identified for the provider name from the available evidence. These records were preserved as unresolved rather than forced into a match.
 
-This makes the enrichment more transparent and avoids overstating the reliability of external entity linking.
+Uncertainty was preserved until verification succeeded, and never resolved by assumption. This makes the enrichment more transparent and avoids overstating the reliability of external entity linking.
 
 ## 9. Search ambiguity and false positives
 
@@ -360,6 +387,24 @@ This variable has several limitations:
 
 The field is therefore used as a screening tool rather than as a final classification.
 
+### 9.1 Manual review of the flagged records
+
+The rule-based flag marked 17 of the 245 records (approximately 6.9 percent of the deduplicated dataset) as possible false positives. All 17 were subsequently reviewed manually in `04_relevance_review.ipynb`, and the outcome of each review is recorded in the `record_relevance_status` and `relevance_notes` fields.
+
+The review confirmed that every one of the 17 flagged records refers to Indigenous peoples of the Americas rather than to India. The pattern is systematic rather than random: English search terms such as "Indian textile" and "Indian art" also match records in which European (mostly German) cataloguing institutions use the term "Indianer" — a German-language ethnographic cataloguing term for Indigenous peoples of the Americas. The evidence in the titles and descriptions names specific communities and places, including the Kuna people of Panama, the Camacan people of Brazil, the Kekchi (Q'eqchi') people of Guatemala, the Huichol people of Mexico, the Apache people of the southwestern United States, and the Gran Chaco region of South America.
+
+Following the project's rules, these 17 records were retained in the dataset and flagged as `likely_not_india_related`, rather than deleted. This keeps them visible and auditable while allowing later analysis to exclude them from India-specific figures.
+
+Two caveats apply. First, this finding is limited to this 245-record sample and should not be generalised to Europeana as a whole. Second, the manual review covered only the 17 flagged records; the remaining 228 records were not individually re-verified as India-related.
+
+### 9.2 The empty `subject` field
+
+The `subject` field, one of Europeana's core descriptive properties, is empty for all 245 records in the dataset (`has_subject` is `False` throughout).
+
+Europeana's data model requires at least one of several descriptive properties (subject, coverage, type, spatial, or temporal) to be present. In this sample, providers evidently satisfy that requirement through `type` — a broad, cheap-to-assign platform category — rather than through `subject`, which requires cataloguing labour and typically draws on a controlled vocabulary such as AAT, GND, or LCSH.
+
+The two findings in this section are plausibly connected: a populated, controlled-vocabulary `subject` field would typically maintain separate authority terms for India and for Indigenous peoples of the Americas, reducing reliance on the ambiguous free-text keyword matching in which the "Indianer" collision occurs.
+
 ## 10. Discussion
 
 The results show that Europeana metadata does not provide a neutral or comprehensive representation of India.
@@ -380,6 +425,8 @@ The strong dominance of image records shows that the platform’s representation
 The uneven distribution after deduplication shows that thematic search categories do not produce equally diverse results.
 
 The concentration of records among a limited number of providers shows that a small number of institutions can have a strong influence on how India appears in the dataset.
+
+The confirmed false positives show that keyword retrieval in multilingual heritage metadata can systematically capture unrelated material, and the empty `subject` field shows that a schema-level gap in descriptive practice can amplify exactly this kind of ambiguity.
 
 The Wikidata enrichment demonstrates that linked open data can improve provider consistency, but it also shows that entity matching requires manual judgement and the preservation of uncertainty.
 
@@ -420,7 +467,9 @@ The main limitations of the project are:
 * the false-positive flag is rule-based;
 * multilingual variation may reduce keyword accuracy;
 * Wikidata enrichment focuses mainly on frequent providers;
-* some provider matches remain uncertain;
+* 54 records remain outside the enrichment scope (`not_checked`) and 3 providers could not be confidently identified (`needs_manual_review`);
+* the `subject` field is empty for all 245 records, limiting reliance on Europeana's own subject classification;
+* the manual relevance review covered only the 17 flagged records; the remaining 228 records were not individually re-verified as India-related;
 * the sample does not represent all India-related cultural heritage in Europeana.
 
 The project should therefore be understood as an analysis of one structured metadata sample rather than a comprehensive account of India in European cultural heritage collections.
@@ -434,16 +483,16 @@ For ordinary reproduction:
 1. create a Python virtual environment;
 2. install packages from `requirements.txt`;
 3. launch JupyterLab from the project root;
-4. run notebooks 01, 02, and 03 in numerical order;
+4. run notebooks 01, 02, 03, and 04 in numerical order;
 5. compare the generated files and counts with the documented expected outputs.
 
 Key expected values are:
 
 * raw records: 1,500;
 * unique-title records: 245;
-* matched records: 139;
-* uncertain records: 28;
-* not-checked records: 78.
+* after notebook 03 — matched: 139, uncertain: 28, not_checked: 78;
+* final, after notebook 04 — matched: 188, uncertain: 0, not_checked: 54, needs_manual_review: 3;
+* records flagged as possible false positives and manually reviewed: 17.
 
 Notebook 00 is optional because it requires an API key and accesses the live Europeana service.
 
